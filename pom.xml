@@ -15,12 +15,19 @@
     </parent>
 
     <properties>
+        <redisson>3.13.6</redisson>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!--============[redis相关]==================-->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>${redisson}</version>
         </dependency>
 
         <dependency>
