@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class RedisConfig {
 
     @Bean
-    public RedissonClient redissonClient(RedisConfigProperties properties) {
+    public RedissonClient redissonClient() {
         Config config = new Config();
         ClusterServersConfig clusterConfig = config.useClusterServers();
         clusterConfig.addNodeAddress(
