@@ -1,1 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+xdx.note.framework.redis.RedisConfigProperties
