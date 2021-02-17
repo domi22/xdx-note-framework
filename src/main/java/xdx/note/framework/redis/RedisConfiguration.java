@@ -3,12 +3,12 @@ package xdx.note.framework.redis;
 import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Bean;
 
+
 public class RedisConfiguration {
 
     @Bean
     public RedissonClient redissonClient(RedisConfigProperties properties) {
-        RedisMode mode = RedisMode.match(properties.getMode());
-        if (!RedisMode.CLUSTER.equals(mode)) {
+        if (!RedisMode.CLUSTER.equals(RedisMode.match(properties.getMode()))) {
             throw new RuntimeException("REDIS MODE ERROR");
         }
         return new
