@@ -13,7 +13,9 @@ public class ClusterServersConfigBuilder {
 
     private static final int MIN = 0;
 
-    private static final int MAX = 100;
+    private static final int MAX_SIZE = 100;
+
+    private static final int MAX_TIMEOUT = 20000;
 
     private static final String NODE_ADDRESS_PARAM = "NodeAddress";
 
@@ -33,91 +35,77 @@ public class ClusterServersConfigBuilder {
     }
 
     public ClusterServersConfigBuilder setSubscriptionConnectionMinimumIdleSize(Integer size) {
-        // 从节点发布和订阅连接的最小空闲连接数 2
-        check(size, "subscriptionConnectionMinimumIdleSize");
+        checkSize(size, "subscriptionConnectionMinimumIdleSize");
         clusterServersConfig.setSubscriptionConnectionMinimumIdleSize(size);
         return this;
     }
 
     public ClusterServersConfigBuilder setSubscriptionConnectionPoolSize(Integer size) {
-        // 节点发布和订阅连接池大小 50
-        check(size, "subscriptionConnectionPoolSize");
+        checkSize(size, "subscriptionConnectionPoolSize");
         clusterServersConfig.setSubscriptionConnectionPoolSize(size);
         return this;
     }
 
     public ClusterServersConfigBuilder setSlaveConnectionMinimumIdleSize(Integer size) {
-        // 从节点最小空闲连接数 32
-        check(size, "slaveConnectionMinimumIdleSize");
+        checkSize(size, "slaveConnectionMinimumIdleSize");
         clusterServersConfig.setSlaveConnectionMinimumIdleSize(size);
         return this;
     }
 
     public ClusterServersConfigBuilder setSlaveConnectionPoolSize(Integer size) {
-        // 从节点连接池大小 64
-        check(size, "slaveConnectionPoolSize");
+        checkSize(size, "slaveConnectionPoolSize");
         clusterServersConfig.setSlaveConnectionPoolSize(size);
         return this;
     }
 
     public ClusterServersConfigBuilder setSubscriptionsPerConnection(Integer connection) {
-        // 单个连接最大订阅数量 5
-        check(connection, "subscriptionsPerConnection");
+        checkSize(connection, "subscriptionsPerConnection");
         clusterServersConfig.setSubscriptionsPerConnection(connection);
         return this;
     }
 
     public ClusterServersConfigBuilder setMasterConnectionPoolSize(Integer size) {
-        // 64
-        check(size, "subscriptionsPerConnection");
+        checkSize(size, "subscriptionsPerConnection");
         clusterServersConfig.setMasterConnectionPoolSize(size);
         return this;
     }
 
     public ClusterServersConfigBuilder setMasterConnectionMinimumIdleSize(Integer size) {
-        // 32
-        check(size, "subscriptionsPerConnection");
+        checkSize(size, "subscriptionsPerConnection");
         clusterServersConfig.setMasterConnectionMinimumIdleSize(size);
         return this;
     }
 
     public ClusterServersConfigBuilder setIdleConnectionTimeout(Integer timeout) {
-        // 10000
-        check(timeout, "idleConnectionTimeout");
+        checkTime(timeout, "idleConnectionTimeout");
         clusterServersConfig.setIdleConnectionTimeout(timeout);
         return this;
     }
 
 
     public ClusterServersConfigBuilder setConnectTimeout(Integer timeout) {
-        check(timeout, "connectTimeout");
-        // 同任何节点建立连接时的等待超时 10000
+        checkTime(timeout, "connectTimeout");
         clusterServersConfig.setConnectTimeout(timeout);
 
         return this;
     }
 
     public ClusterServersConfigBuilder setTimeout(Integer timeout) {
-        check(timeout, "timeout");
-        // 等待节点回复命令的时间。该时间从命令发送成功时开始计时 3000
+        checkTime(timeout, "timeout");
         clusterServersConfig.setTimeout(timeout);
 
         return this;
     }
 
     public ClusterServersConfigBuilder setRetryAttempts(Integer retryAttempts) {
-        check(retryAttempts, "retryAttempts");
-        // 如果尝试达到 retryAttempts（命令失败重试次数 3） 仍然不能将命令发送至某个指定的节点时，将抛出错误。
-        // 如果尝试在此限制之内发送成功，则开始启用 timeout（命令等待超时） 计时
+        checkSize(retryAttempts, "retryAttempts");
         clusterServersConfig.setRetryAttempts(retryAttempts);
 
         return this;
     }
 
     public ClusterServersConfigBuilder setRetryInterval(Integer interval) {
-        check(interval, "retryInterval");
-        // 在某个节点执行相同或不同命令时，连续 失败 failedAttempts（执行失败最大次数） 时，
-        // 该节点将被从可用节点列表里清除，直到 reconnectionTimeout（重新连接时间间隔 1500） 超时以后再次尝试。
+        checkTime(interval, "retryInterval");
         clusterServersConfig.setRetryInterval(interval);
         return this;
     }
@@ -127,12 +115,20 @@ public class ClusterServersConfigBuilder {
         return Redisson.create(config);
     }
 
-    private boolean right(Integer size) {
-        return size != null && size <= MAX && size >= MIN;
+    private boolean rightSize(Integer size) {
+        return size != null && size <= MAX_SIZE && size >= MIN;
     }
 
-    private void check(Integer size, String param) {
-        Assert.isTrue(right(size), new IllegalArgumentException(msg(param)));
+    private boolean rightTime(Integer timeout) {
+        return timeout != null && timeout <= MAX_TIMEOUT && timeout >= MIN;
+    }
+
+    private void checkSize(Integer size, String param) {
+        Assert.isTrue(rightSize(size), new IllegalArgumentException(msg(param)));
+    }
+
+    private void checkTime(Integer time, String param) {
+        Assert.isTrue(rightTime(time), new IllegalArgumentException(msg(param)));
     }
 
     private String msg(String param) {
