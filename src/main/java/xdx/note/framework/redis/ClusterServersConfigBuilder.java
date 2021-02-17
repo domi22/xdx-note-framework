@@ -12,15 +12,11 @@ import java.util.List;
 public class ClusterServersConfigBuilder {
 
     private static final int MIN = 0;
-
     private static final int MAX_SIZE = 100;
-
     private static final int MAX_TIMEOUT = 20000;
-
     private static final String NODE_ADDRESS_PARAM = "NodeAddress";
 
     private Config config;
-
     private ClusterServersConfig clusterServersConfig;
 
     public ClusterServersConfigBuilder() {
